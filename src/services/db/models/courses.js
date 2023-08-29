@@ -1,7 +1,4 @@
-//TODO: Completar Modelo con Mongoose:
-
-import mongoose from "mongoose";
-
+import mongoose from 'mongoose';
 
 const collectionName = 'courses';
 
@@ -11,15 +8,20 @@ const stringTypeSchemaUniqueRequired = {
     required: true
 };
 
+const stringTypeSchemaNonUniqueRequired = {
+    type: String,
+    required: true
+};
+
+
 const courseSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    teacherName: Number,
-    students: Array,
-    id: stringTypeSchemaUniqueRequired
+    title: stringTypeSchemaNonUniqueRequired,
+    description: stringTypeSchemaNonUniqueRequired,
+    teacherName: stringTypeSchemaNonUniqueRequired,
+    students: {
+        type:Array,
+        default:[]
+    }
 });
 
-
-export const MODEL_COURSES = mongoose.model(collectionName, courseSchema);
-
-// exportar
+export const coursesModel = mongoose.model(collectionName, courseSchema);

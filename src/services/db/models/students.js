@@ -1,13 +1,43 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const collectionName = 'students';
 
-const studentsSchema = new mongoose.Schema({
-    name: String,
-    lastName: String,
-    age: Number,
-    courses: Array
+const stringTypeSchemaUniqueRequired = {
+    type: String,
+    unique: true,
+    required: true
+};
+
+const stringTypeSchemaNonUniqueRequired = {
+    type: String,
+    required: true
+};
+
+
+const studentSchema = new mongoose.Schema({
+    name: stringTypeSchemaNonUniqueRequired,
+    lastName: stringTypeSchemaNonUniqueRequired,
+    age: stringTypeSchemaNonUniqueRequired,
+    courses: {
+        type: [
+            {
+                course: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "courses"
+                }
+            }
+        ],
+        default:[]
+    }
+    
 });
 
-
-export const MODEL_STUDENTS = mongoose.model(collectionName, studentsSchema);
+/**
+ * Middleware para agregar dentro del método 'find' un llamado a una función, en este 
+ * caso llamamos al metodo populate.
+ */
+studentSchema.pre('findOne', function() {
+    this.populate("courses.course");
+});
+const studentsModel = mongoose.model(collectionName, studentSchema);
+export default studentsModel;
